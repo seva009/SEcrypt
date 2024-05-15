@@ -1,11 +1,15 @@
 #include <stdio.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <string.h>
 #include <iostream>
 #include "dFile.h"
 
 void dFile::loadFile() {
     FILE *fileF = fopen(filename, "rb");
+    printf(filename, '\n');
+    if (fileF == NULL) {
+        throw std::runtime_error("Can't open file");
+    }
     fseek(fileF, 0, SEEK_END);
     size = ftell(fileF);
     fseek(fileF, 0, SEEK_SET);

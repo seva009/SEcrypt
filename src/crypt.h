@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "dFile.h"
+#include <string>
+#include <cstdlib>
+
 
 using namespace std;
 
@@ -324,7 +327,15 @@ class xsCrypt {
             else {
                 hashStr = md5(password);
                 for (int i = 0; i < 4; i++) {
-                    keys[i] = genKey(stoul(hashStr.substr(i * 8, (i + 1) * 8), nullptr, 16), size, gen1);
+                    unsigned long sd;
+                    cout << hashStr << endl;
+                    if (hashStr.length() < (i + 1) * 8) {
+                        cout << "Error!!" << endl;
+                    }
+                    else {
+                        sd = stoul(hashStr.substr(i * 8, 8), nullptr, 16);
+                    }
+                    keys[i] = genKey(sd, size, gen1);
                     if (keys[i] == nullptr) {
                         throw std::runtime_error("Key generation failed");
                     }

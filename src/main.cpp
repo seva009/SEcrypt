@@ -37,6 +37,10 @@ classname.clear() старая версия, затирает файл и деа
     #include <ncurses.h> // заголовок для линукс
 #elif defined(__WIN__)
     #include <conio.h> // и для винды
+    #include <string>
+
+    #include <cstdlib>
+
 #endif
 
 #ifndef __WIN__
@@ -144,11 +148,7 @@ int main(int argc, char *argv[])
         return 0;
     } 
 
-    /*
-    если не передан файл 
-    TODO: тут баг если будет что-то на подобии ./a.out -lm -lm то он будет пытаться открыть "-lm" т.е. первый аргумент переданый и прога кританет(выдаст Segmentation fault):)
-    */
-    if (argc - 1 - (int)h - (int)u2p - (int)xs - (int)lm - (int)utr - (int)uek - (int)aes < 1) {
+    if (argv[1][0] == '-') { //lol dirty hack
         #ifdef __LINUX__
             printf("\033[91mFile is not specified\n\033[0m");
         #endif
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (!utr) {
+    if (!utr) { // красивый ввод пароля 
         #ifdef __LINUX__ // версия ввода пароля для linux
         initscr();
         noecho();
@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
         #endif
     }
 
-    if (aes) {
+    if (aes) { //вики пишет что aes256 анб используется для TOP SECRET
         printf("Encrypt file or decrypt (e/d): ");
         char u = getchar();
         ByteArray key, plain, out; 
@@ -419,7 +419,7 @@ int main(int argc, char *argv[])
             printf("\033[95mFlag -xs is not compatible with flags -lm and -xs\n\033[0m");
         #endif
         #ifdef __WIN__
-            printf("Flag -xs is not compatible with flags -lm and -xs\n");
+            printf("Flag -xs is not compatible with flags -lm and -xs aa\n");
         #endif
         xsCrypt xs;
         if (!u2p) {
