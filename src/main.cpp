@@ -1,6 +1,6 @@
 //build commands
-//Linux : g++ main.cpp md5.cpp -lncurses -O2 -Wall -std=c++20 -D__LINUX__
-//Windows : g++ main.cpp md5.cpp -O2 -Wall -std=c++20 -D__WIN__
+//Linux : g++ main.cpp md5.cpp -lncurses -O2 -Wall -std=c++11 -D__LINUX__
+//Windows : g++ main.cpp md5.cpp -O2 -Wall -std=c++11 -D__WIN__
 /*
 classname.init(...) это загрузка файла в ОЗУ, генерация ключей
 classname.crypt() XOR'ит файл с ключами
