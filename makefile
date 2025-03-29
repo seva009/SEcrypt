@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -O2 -Wall -std=c++11 -D__LINUX__
 LIBS = -lncurses
-SRCS = src/main.cpp src/md5.cpp src/aes256.cpp src/dFile.cpp
+SRCS = src/main.cpp src/md5.cpp src/aes256.cpp src/dFile.cpp src/crypt.cpp
 OBJS = $(SRCS:.cpp=.o)
 EXEC = SEcrypt
 
@@ -16,4 +16,4 @@ $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) 
+	rm -f $(OBJS) $(EXEC)
