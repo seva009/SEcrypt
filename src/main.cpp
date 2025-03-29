@@ -31,6 +31,7 @@ classname.clear() старая версия, затирает файл и деа
 #include "aes256.hpp"
 #include <stdio.h>
 #include "crypt.h"
+#include "httplib.h"
 #include <cstring>
 
 #ifdef __LINUX__
@@ -57,13 +58,54 @@ classname.clear() старая версия, затирает файл и деа
 
 #define PASSWORD_LEN 256 //максимальная длина пароля чтобы небыло переполнения
 //названия флагов
-const char* lmflags[]  = {"-lm", "-l", "--low-memory"}; 
-const char* xsflags[]  = {"-xs", "-x", "--xs-mode"}; 
-const char* hflags[]   = {"-h", "-hp", "--help"}; 
-const char* u2pflags[] = {"-up", "-u", "--u2p-mode"}; 
-const char* utrflags[] = {"-tr", "-t", "--ut-mode"};
-const char* uekflags[] = {"-ek", "-e", "--uek-mode"};
-const char* aesflags[] = {"-a", "-aes", "--aes-mode"};
+const char* lmflags[]    = {"-lm", "-l", "--low-memory"};
+const char* xsflags[]    = {"-xs", "-x", "--xs-mode"};
+const char* hflags[]     = {"-h", "-hp", "--help"};
+const char* u2pflags[]   = {"-up", "-u", "--u2p-mode"};
+const char* utrflags[]   = {"-tr", "-t", "--ut-mode"};
+const char* uekflags[]   = {"-ek", "-e", "--uek-mode"};
+const char* aesflags[]   = {"-a", "-aes", "--aes-mode"};
+const char* serveflags[] = {"-s", "-sv", "--serve"};
+
+
+int do_serve(void) {
+    httplib::Server svr;
+    svr.Get("/", [](const httplib::Request &, httplib::Response &res) {
+        res.set_file_content("./index.html");
+    });
+    svr.Post("/process", [](const httplib::Request &req, httplib::Response &res) {
+        auto size = req.files.size();
+        const auto& file = req.get_file_value("file");
+        const auto& password = req.get_file_value("password");
+        const auto& algo = req.get_file_value("algorithm");
+        const auto& action = req.get_file_value("action");
+        ByteArray key, plain, out;
+        size_t endSize;
+        for (auto c : password.content) {
+            key.push_back(c);
+        }
+        for (auto c : file.content) {
+            plain.push_back(c);
+        }
+        Aes256 aes(key);
+        if (action.content[0] == 'e') {   // TODO
+            endSize = Aes256::encrypt(key, plain, out);
+        }
+        else {
+            endSize = Aes256::decrypt(key, plain, out);
+        }
+        string outs;
+        for (int i = 0; i < endSize; ++i) {
+            outs.push_back(out[i]);
+        }
+        res.set_content(outs, "application/octet-stream");
+    });
+
+
+    svr.listen("127.0.0.1", 23444);
+    return 0;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -75,6 +117,7 @@ int main(int argc, char *argv[])
     bool utr = false;
     bool uek = false;
     bool aes = false;
+    bool serve = false;
     int ekpos = 0;
 
     printf("SEcrypt by Empers0n_ \n");
@@ -126,6 +169,12 @@ int main(int argc, char *argv[])
                 }
                 aes = true;
             }
+            if (strcmp(argv[i], serveflags[j]) == 0) {
+                if (serve) {
+                    printf("Submitting two or more of the same flags may result in unforeseen errors!");
+                }
+                serve = true;
+            }
         }
     }
 
@@ -139,6 +188,7 @@ int main(int argc, char *argv[])
         printf(" -ek,    -e,   --uek-mode | <key1 file> <key2 file>(opt) - use external key |\n");
         printf(" -aes,   -a,   --aes-mode | Use aes encryption                              |\n");
         printf(" -hp,    -h,       --help | help                                            |\n");
+        printf(" -sv,    -s,      --serve | Run a HTTP server on port 23444                 |\n");
         printf("__________________________|_________________________________________________|\n");
         printf("         Errors           |               Description                       |\n");
         printf(" Segmentation fault       | File not exist/can't alloc mem (not enough RAM) |\n");
@@ -148,7 +198,15 @@ int main(int argc, char *argv[])
         return 0;
     } 
 
-    if (argv[1][0] == '-') { //lol dirty hack
+    if (serve) {
+        return do_serve();
+    }
+
+    bool lack_pos_args = true;
+    for (int ai = 1; ai < argc; ++ai) {
+        lack_pos_args &= argv[ai][0] == '-';
+    }
+    if (lack_pos_args) {
         #ifdef __LINUX__
             printf("\033[91mFile is not specified\n\033[0m");
         #endif
@@ -159,13 +217,13 @@ int main(int argc, char *argv[])
         return 0;
     }
     if (aes && u2p) {
-        printf("Aes mode don't support 2 keys");
+        printf("Aes mode doesn't support 2 keys");
         u2p = false;
     }
 
     if (uek) { //использование внешнего ключа ОБЯЗАТЕЛЬНО должен быть такого же размера как и файл на линуксе если ключ был загенерен -utr то можно считать что криптостойкость равна 100% а на винде не знаю там использована <random> (гугл пишет что random достаточно криптостойкий)
         if (0 - (int)xs - (int)lm - (int)utr < 0) {
-            printf("\033[95mUsing other flags exept -u2p with -uek doesn't make sense.");
+            printf("\033[95mUsing other flags except -u2p with -uek doesn't make sense.");
         }
         if (argc > 4 + (int)xs + (int)lm + (int)utr + ((int)u2p * 2)) {
                 printf("Did you forgot add flag -u2p to decrypt/encrypt with 2 keys?\n\033[0m");
