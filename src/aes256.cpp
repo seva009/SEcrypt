@@ -20,7 +20,7 @@
  *     License along with Aes256.
  *     If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include "tracealloc.h"
 #include "aes256.hpp"
 
 #include <iostream>

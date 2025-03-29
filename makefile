@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -O2 -Wall -std=c++11 -D__LINUX__
+CFLAGS = -O2 -Wall -std=c++11
 LIBS = -lncurses
 SRCS = src/main.cpp src/md5.cpp src/aes256.cpp src/dFile.cpp src/crypt.cpp
 OBJS = $(SRCS:.cpp=.o)

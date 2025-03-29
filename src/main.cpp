@@ -1,6 +1,6 @@
 //build commands
-//Linux : g++ main.cpp md5.cpp -lncurses -O2 -Wall -std=c++11 -D__LINUX__
-//Windows : g++ main.cpp md5.cpp -O2 -Wall -std=c++11 -D__WIN__
+//Linux : g++ main.cpp md5.cpp -lncurses -O2 -Wall -std=c++11 -D__linux__
+//Windows : g++ main.cpp md5.cpp -O2 -Wall -std=c++11 -D_WIN32
 /*
 classname.init(...) это загрузка файла в ОЗУ, генерация ключей
 classname.crypt() XOR'ит файл с ключами
@@ -27,6 +27,7 @@ classname.clear() старая версия, затирает файл и деа
  так вот все расчеты проведены для 4 ключей а о 8 думаю говорить не надо
  а если для тебя это не аргумент то просто флаг -t делает взлом невозможным(но надо хранить ключ где-то)
 */
+#include "tracealloc.h"
 #include "dFile.h"
 #include "aes256.hpp"
 #include <stdio.h>
@@ -34,26 +35,14 @@ classname.clear() старая версия, затирает файл и деа
 #include "httplib.h"
 #include <cstring>
 
-#ifdef __LINUX__
+#ifdef __linux__
     #include <ncurses.h> // заголовок для линукс
-#elif defined(__WIN__)
+#elif defined(_WIN32)
     #include <conio.h> // и для винды
     #include <string>
 
     #include <cstdlib>
 
-#endif
-
-#ifndef __WIN__
-#ifndef __LINUX__
-    #error Platform not selected please add flag -D__LINUX__ or -D__WIN__
-#endif
-#endif
-
-#ifdef __LINUX__
-#ifdef __WIN__
-    #error Only one platform can be selected please remove one of the flags -D__LINUX__ or -D__WIN__
-#endif
 #endif
 
 #define PASSWORD_LEN 256 //максимальная длина пароля чтобы небыло переполнения
@@ -70,6 +59,10 @@ const char* serveflags[] = {"-s", "-sv", "--serve"};
 
 int do_serve(void) {
     httplib::Server svr;
+    svr.Get("/getmemuse", [](const httplib::Request&, httplib::Response& res) {
+        res.set_content(std::to_string(t.getAllocSz()), "text/plain");
+    });
+
     svr.Get("/", [](const httplib::Request &, httplib::Response &res) {
         res.set_file_content("./index.html");
     });
@@ -207,10 +200,10 @@ int main(int argc, char *argv[])
         lack_pos_args &= argv[ai][0] == '-';
     }
     if (lack_pos_args) {
-        #ifdef __LINUX__
+        #ifdef __linux__
             printf("\033[91mFile is not specified\n\033[0m");
         #endif
-        #ifdef __WIN__
+        #ifdef _WIN32
             printf("File is not specified\n");
         #endif
         printf("Usage: %s <input file> <flags>(optional)\n", argv[0]);
@@ -251,7 +244,7 @@ int main(int argc, char *argv[])
     }
 
     if (!utr) { // красивый ввод пароля 
-        #ifdef __LINUX__ // версия ввода пароля для linux
+        #ifdef __linux__ // версия ввода пароля для linux
         initscr();
         noecho();
         printw("%s", "Enter password: ");
@@ -306,7 +299,7 @@ int main(int argc, char *argv[])
         }
         refresh();
         endwin();
-        #elif defined(__WIN__) // версия ввода пароля для винды
+        #elif defined(_WIN32) // версия ввода пароля для винды
             char ch;
             printf("Enter password: ");
             for (int i = 0; i < PASSWORD_LEN; i++) {
@@ -382,19 +375,19 @@ int main(int argc, char *argv[])
     }
 
     if (!u2p && lm && !xs) {
-        #ifdef __LINUX__
+        #ifdef __linux__
             printf("\033[95mUsing -lm flag without second password doesn't make any sense\n\033[0m");
         #endif
-        #ifdef __WIN__
+        #ifdef _WIN32
             printf("Using -lm flag without second password doesn't make any sense\n");
         #endif
     }
 
     if (xs) {
-        #ifdef __LINUX__
+        #ifdef __linux__
             printf("\033[95mUsing -xs can slow down the process 2-5 times\n\033[0m");
         #endif
-        #ifdef __WIN__
+        #ifdef _WIN32
             printf("Using -xs can slow down the process 2-5 times\n");
         #endif
     }
@@ -404,10 +397,10 @@ int main(int argc, char *argv[])
         Crypt crypt;
         if (!u2p) {
             if (!utr) {
-                #ifdef __LINUX__
+                #ifdef __linux__
                     printf("\033[91mUsing single key without -xs or -utr very very very unsafe!\n\033[0m"); 
                 #endif
-                #ifdef __WIN__
+                #ifdef _WIN32
                     printf("Using single key without -xs or -utr very very very unsafe!\n");
                 #endif
                 /*
@@ -440,10 +433,10 @@ int main(int argc, char *argv[])
     }
 
     if (lm && !xs) {
-        #ifdef __LINUX__
+        #ifdef __linux__
             printf("\033[91mUsing single key without -xs or -utr very very very unsafe!\n\033[0m"); 
         #endif
-        #ifdef __WIN__
+        #ifdef _WIN32
             printf("Using single key without -xs or -utr very very very unsafe!\n");
         #endif
         lmCrypt lm;
@@ -473,10 +466,10 @@ int main(int argc, char *argv[])
     }
 
     if (xs && !lm) {
-        #ifdef __LINUX__
+        #ifdef __linux__
             printf("\033[95mFlag -xs is not compatible with flags -lm and -xs\n\033[0m");
         #endif
-        #ifdef __WIN__
+        #ifdef _WIN32
             printf("Flag -xs is not compatible with flags -lm and -xs aa\n");
         #endif
         xsCrypt xs;
@@ -498,10 +491,10 @@ int main(int argc, char *argv[])
     }
     
     if (xs && lm) {
-        #ifdef __LINUX__
+        #ifdef __linux__
             printf("\033[95mFlags -lm with -xs is not compatible with flag -xs\033[0m\n");
         #endif
-        #ifdef __WIN__
+        #ifdef _WIN32
             printf("Flags -lm with -xs is not compatible with flag -xs\n");
         #endif
         lmxsCrypt lmxs;
@@ -524,10 +517,10 @@ int main(int argc, char *argv[])
         return 0;
     }
     //idk как сюда можно попасть но ладно
-    #ifdef __LINUX__
+    #ifdef __linux__
         printf("\033[91mYou have reached logic error please send to me (Empers0n) this string: %d%d%d%d%d%d\n\033[0m", (int)lm, (int)xs, (int)u2p, (int)utr, (int)lm, (int)xs);
     #endif 
-    #ifdef __WIN__
+    #ifdef _WIN32
         printf("You have reached logic error please send to me (Empers0n) this string: %d%d%d%d%d%d\n", (int)lm, (int)xs, (int)u2p, (int)utr, (int)lm, (int)xs);
     #endif
     return 0;

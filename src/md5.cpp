@@ -31,6 +31,7 @@ documentation and/or software.
 */
  
 /* interface header */
+#include "tracealloc.h"
 #include "md5.h"
  
 /* system implementation headers */

@@ -1,3 +1,4 @@
+#include "tracealloc.h"
 #include <iostream>
 #include "md5.h"
 #include <random>
@@ -11,19 +12,19 @@
 
 using namespace std;
 
-#ifndef __WIN__
-#ifndef __LINUX__
-#error Platform not selected please add flag -D__LINUX__ or -D__WIN__
+#ifndef _WIN32
+#ifndef __linux__
+#error Platform not selected please add flag -D__linux__ or -D_WIN32
 #endif
 #endif
 
-#ifdef __LINUX__
-#ifdef __WIN__
-#error Only one platform can be selected please remove one of the flags -D__LINUX__ or -D__WIN__
+#ifdef __linux__
+#ifdef _WIN32
+#error Only one platform can be selected please remove one of the flags -D__linux__ or -D_WIN32
 #endif
 #endif
 
-#ifdef __WIN__
+#ifdef _WIN32
 void* sGenKey(size_t size, mt19937_64& eng) {
     void* memKey = malloc(size);
     if (memKey == nullptr) {
@@ -39,7 +40,7 @@ void* sGenKey(size_t size, mt19937_64& eng) {
 }
 #endif
 
-#ifdef __LINUX__
+#ifdef __linux__
 void* sGenKey(size_t size) {
     FILE* fileF = fopen("/dev/random", "rb");
     void* memKey = malloc(size);
@@ -90,11 +91,11 @@ void* sGenKey(size_t size) {
             throw std::runtime_error("Checksums are same please change one of passwords");
         }
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             memKey = sGenKey(size, gen1);
             ndMemKey = sGenKey(size, gen2);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             memKey = sGenKey(size);
             ndMemKey = sGenKey(size);
 #endif
@@ -115,10 +116,10 @@ void* sGenKey(size_t size) {
         size = file.getLoadedSize();
         unsigned int hash = MD5HashToUInt(password);
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             memKey = sGenKey(size, gen1);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             memKey = sGenKey(size);
 #endif
         }
@@ -199,7 +200,7 @@ void* sGenKey(size_t size) {
         file.loadFile();
         size = file.getLoadedSize();
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             for (int i = 0; i < 4; i++) {
                 keys[i] = sGenKey(size, gen1);
             }
@@ -207,7 +208,7 @@ void* sGenKey(size_t size) {
                 keys[i + 4] = sGenKey(size, gen2);
             }
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             for (int i = 0; i < 4; i++) {
                 keys[i] = sGenKey(size);
             }
@@ -265,12 +266,12 @@ void* sGenKey(size_t size) {
         file.loadFile();
         size = file.getLoadedSize();
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             for (int i = 0; i < 4; i++) {
                 keys[i] = sGenKey(size, gen1);
             }
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             for (int i = 0; i < 4; i++) {
                 keys[i] = sGenKey(size);
             }
@@ -304,10 +305,10 @@ void* sGenKey(size_t size) {
         file.loadFile();
         size = file.getLoadedSize();
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             keys[0] = sGenKey(size, gen1);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             keys[0] = sGenKey(size);
 #endif
         }
@@ -326,10 +327,10 @@ void* sGenKey(size_t size) {
         file.loadFile();
         size = file.getLoadedSize();
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             keys[0] = sGenKey(size, gen1);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             keys[0] = sGenKey(size);
 #endif
         }
@@ -351,10 +352,10 @@ void* sGenKey(size_t size) {
         memset(keys[0], 0, size);
         free(keys[0]);
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             keys[0] = sGenKey(size, gen2);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             keys[0] = sGenKey(size);
 #endif
         }
@@ -400,7 +401,7 @@ void* sGenKey(size_t size) {
             ((unsigned char*)key)[i] ^= eng() % (unsigned char)-1;
         }
     }
-#ifdef __WIN__
+#ifdef _WIN32
     void lmxsCrypt::sModKey(void* key, size_t size, mt19937_64& eng) {
         std::random_device rd;
         eng.seed(rd());
@@ -410,7 +411,7 @@ void* sGenKey(size_t size) {
         }
     }
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
     void lmxsCrypt::sModKey(void* key, size_t size) {
         FILE* fileF = fopen("/dev/random", "rb");
         void* skey = malloc(size);
@@ -432,10 +433,10 @@ void* sGenKey(size_t size) {
         file.loadFile();
         size = file.getLoadedSize();
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             keys[0] = sGenKey(size, gen1);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             keys[0] = sGenKey(size);
 #endif
         }
@@ -447,10 +448,10 @@ void* sGenKey(size_t size) {
         }
         if (utr) {
             for (int i = 0; i < 4; i++) {
-#ifdef __WIN__
+#ifdef _WIN32
                 sModKey(keys[0], size, gen1);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
                 sModKey(keys[0], size);
 #endif
                 if (keys[i] == nullptr) {
@@ -473,11 +474,11 @@ void* sGenKey(size_t size) {
         file.loadFile();
         size = file.getLoadedSize();
         if (utr) {
-#ifdef __WIN__
+#ifdef _WIN32
             keys[0] = sGenKey(size, gen1);
             keys[1] = sGenKey(size, gen2);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
             keys[0] = sGenKey(size);
             keys[1] = sGenKey(size);
 #endif
@@ -491,11 +492,11 @@ void* sGenKey(size_t size) {
         }
         if (utr) {
             for (int i = 0; i < 4; i++) {
-#ifdef __WIN__
+#ifdef _WIN32
                 sModKey(keys[0], size, gen1);
                 sModKey(keys[1], size, gen2);
 #endif
-#ifdef __LINUX__
+#ifdef __linux__
                 sModKey(keys[0], size);
                 sModKey(keys[1], size);
 #endif

@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEcrypt</title>
+    <script>
+                    function updateCounter() {
+                        fetch('/getmemuse')
+                            .then(response => response.text())
+                            .then(data => {
+                                document.getElementById('cmemuse').innerText = data;
+                            });
+                    }
+                    setInterval(updateCounter, 200);
+    </script>
 </head>
 <body>
     <h2>Encrypt</h2>
@@ -20,8 +30,9 @@
             <option value="encrypt">Encrypt</option>
             <option value="decrypt">Decrypt</option>
         </select><br><br>
-        
+
         <input type="submit" value="Encrypt">
     </form>
+    <h3>Memory usage: <span id="cmemuse">0</span></h3>
 </body>
 </html>
