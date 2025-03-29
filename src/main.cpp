@@ -421,14 +421,19 @@ int main(int argc, char *argv[])
             printf("1/4 step\n");
             crypt.init(argv[1], password, password2, utr);
         }
+        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.cryptFile();
         printf("2/4 step\n");
+        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.saveFile();
         printf("3/4 step\n");
+        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.wipe();
         printf("4/4 step\n");
+        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.clear();
         printf("Done\n");
+        cout << t.getAllocSz() << "Mem use" << endl;
         return 0;
     }
 
