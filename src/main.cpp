@@ -105,8 +105,9 @@ int do_serve(void) {
         }
         res.set_content(outs, "application/octet-stream");
     });
-    svr.Get("/generate_rsa_key", [](const httplib::Request &req, httplib::Response &res) {
-        RSA rsa(256);  // Hard coded
+    svr.Post("/generate_rsa_key", [](const httplib::Request &req, httplib::Response &res) {
+        const auto& n_bits = req.get_file_value("n_bits");
+        RSA rsa(std::stoi(n_bits.content));  // Hard coded
         std::string out;
         out.append("{\"private_key\": \"");
         out.append(rsa.private_key.serialize());

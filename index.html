@@ -15,10 +15,16 @@
         setInterval(updateCounter, 200);
         async function genRandRSA() {
             const gendLabel = document.getElementById('randKeysLabel');
+            const n_bits = document.getElementById('n_bits').value;
 
             gendLabel.textContent = 'Generating...';
             try {
-                const response = await fetch('/generate_rsa_key');
+                const formData = new FormData();
+                formData.append('n_bits', n_bits);
+                const response = await fetch('/generate_rsa_key', {
+                    method: 'POST',
+                    body: formData
+                });
                 const data = await response.json();
                 gendLabel.textContent = `Private key: ${data.private_key} Public key: ${data.public_key}`;
             } catch (error) {
@@ -48,7 +54,8 @@
 
         <input type="submit" value="Encrypt">
     </form>
-    <button onclick="genRandRSA()">Random 256-bit</button>
+    <input type="number" id="n_bits" value=256 />
+    <button onclick="genRandRSA()">Random</button>
     <p id="randKeysLabel"></p>
     <h3>Memory usage: <span id="cmemuse">0</span></h3>
 </body>
