@@ -1,37 +1,20 @@
-#include "rsa.h"
+#include "rsa.hpp"
 #include "num.hpp"
 #include "crypt.h"
+#include <algorithm>
+#include <cassert>
 #include <sstream>
 
 
-class PrivateKey {
-public:
-    Num n, d;
+RSA::RSA(PrivateKey private_key, PublicKey public_key) : private_key(private_key), public_key(public_key) {};
+RSA::RSA(PrivateKey private_key) : private_key(private_key) {};
+RSA::RSA(PublicKey public_key) : public_key(public_key) {};
+
+RSA::RSA(size_t n_bits) {
+    tie(this->private_key, this->public_key) = genRandKeys(n_bits);
 };
 
-class PublicKey {
-public:
-    Num n, e;
-};
-
-class RSA {
-protected:
-    Num encrypt(Num m);
-    Num decrypt(Num m);
-public:
-    PublicKey public_key;
-    PrivateKey private_key;
-    RSA(PrivateKey private_key, PublicKey public_key) : private_key(private_key), public_key(public_key) {};
-    RSA(PublicKey public_key) : public_key(public_key) {};
-    RSA(size_t n_bits) {
-        tie(this->private_key, this->public_key) = genRandKeys(n_bits);
-    };
-    tuple<PrivateKey, PublicKey> genRandKeys(size_t n_bits);
-    std::string encrypt(const std::string &plaintext);
-    std::string decrypt(const std::string &plaintext);
-};
-
-bool isPrimeFermat(Num n, int iterc=10) {
+bool isPrimeFermat(Num n, int iterc) {
     if (n < 4) {
         return n == 2 || n == 3;
     }
@@ -67,12 +50,10 @@ Num egcd(Num a, Num b) {
 
 tuple<PrivateKey, PublicKey> RSA::genRandKeys(size_t n_bits) {
     Num p = genPrime(n_bits), q = genPrime(n_bits);
-    cout << "Gen'd" << endl;
     Num n = p * q;
     Num phi = (p-1) * (q-1);
     Num e = (1 << 16) + 1;
     Num d = (phi + egcd(e, phi)) % phi;
-    cout << phi << ' ' << e << ' ' << d << endl;
     return {{.n = n, .d = d}, {.n = n, .e = e}};
 }
 
@@ -92,7 +73,7 @@ Num string_to_num(const std::string &s) {
     return result;
 }
 
-std::string num_to_string(const Num &n, int base = 256, char offset = 0) {
+std::string num_to_string(const Num &n, int base, char offset) {
     std::string s;
     Num k = n;
     while (k != 0) {
@@ -110,10 +91,9 @@ std::string RSA::encrypt(const std::string &plaintext) {  // TODO FIXME WONT WOR
     for (size_t cp = 0; cp < plaintext.size(); cp += bs) {
         Num m = string_to_num(plaintext.substr(cp, bs));
         m = encrypt(m);
-        cout << plaintext.substr(cp, bs) << " encrypted: " << m << endl;
         std::vector<char> out;
         m.print(out);
-        if (m[m.size()-1] == '\0') m.pop_back();
+        if (out.back() == '\0') out.pop_back();
         res.append(std::string(out.begin(), out.end()));
         if (cp + bs < plaintext.size()) res.push_back('_');
     }
@@ -129,10 +109,64 @@ std::string RSA::decrypt(const std::string &ciphertext) {
     while (std::getline(stream, token, '_')) {
         Num m(token.c_str());
         m = decrypt(m);
-        cout << token << ' ' << m << endl;
-        res.append(num_to_string(m));
+        std::string out = num_to_string(m);
+        std::reverse(out.begin(), out.end());
+        res.append(out);
     }
     return res;
 }
 
+
+std::string PublicKey::serialize() {
+    std::string out;
+    std::vector<char> tmpout;
+    n.print(tmpout);
+    if (tmpout.back() == '\0') tmpout.pop_back();
+    out.append(std::string(tmpout.begin(), tmpout.end()));
+    out.push_back('_');
+    tmpout.clear();
+    e.print(tmpout);
+    if (tmpout.back() == '\0') tmpout.pop_back();
+    out.append(std::string(tmpout.begin(), tmpout.end()));
+    return out;
+}
+
+PublicKey PublicKey::deserialize(const std::string &s) {
+    std::istringstream stream(s);
+    std::string token;
+    std::vector<Num> tokens;
+    while (std::getline(stream, token, '_')) {
+        Num m(token.c_str());
+        tokens.push_back(m);
+    }
+    assert(tokens.size() == 2);
+    return {.n = tokens[0], .e = tokens[1]};
+};
+
+std::string PrivateKey::serialize() {
+    std::string out;
+    std::vector<char> tmpout;
+    n.print(tmpout);
+    if (tmpout.back() == '\0') tmpout.pop_back();
+    out.append(std::string(tmpout.begin(), tmpout.end()));
+    out.push_back('_');
+    tmpout.clear();
+    d.print(tmpout);
+    if (tmpout.back() == '\0') tmpout.pop_back();
+    out.append(std::string(tmpout.begin(), tmpout.end()));
+    return out;
+}
+
+PrivateKey PrivateKey::deserialize(const std::string &s) {
+    std::istringstream stream(s);
+    std::string token;
+    std::vector<Num> tokens;
+    while (std::getline(stream, token, '_')) {
+        Num m(token.c_str());
+        tokens.push_back(m);
+    }
+    assert(tokens.size() == 2);
+    PrivateKey privKey{tokens[0], tokens[1]};
+    return privKey;
+}
 

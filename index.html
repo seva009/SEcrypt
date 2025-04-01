@@ -5,14 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEcrypt</title>
     <script>
-                    function updateCounter() {
-                        fetch('/getmemuse')
-                            .then(response => response.text())
-                            .then(data => {
-                                document.getElementById('cmemuse').innerText = data;
-                            });
-                    }
-                    setInterval(updateCounter, 200);
+        function updateCounter() {
+            fetch('/getmemuse')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('cmemuse').innerText = data;
+                });
+        }
+        setInterval(updateCounter, 200);
+        async function genRandRSA() {
+            const gendLabel = document.getElementById('randKeysLabel');
+
+            gendLabel.textContent = 'Generating...';
+            try {
+                const response = await fetch('/generate_rsa_key');
+                const data = await response.json();
+                gendLabel.textContent = `Private key: ${data.private_key} Public key: ${data.public_key}`;
+            } catch (error) {
+                gendLabel.textContent = `Error: ${error.message}`;
+            }
+        }
     </script>
 </head>
 <body>
@@ -21,10 +33,13 @@
         <label for="file">Choose a file with plaintext/ciphertext:</label><br>
         <input type="file" id="file" name="file" required><br><br>
         <label for="key">Enter password:</label><br>
-        <input type="text" id="password" name="password" required><br><br>
+        <input type="text" id="password" name="password"><br><br>
+        <label for="key">RSA private key (decrypt) or public key (encrypt):</label><br>
+        <input type="text" id="rsa_key" name="rsa_key"><br><br>
         <label for="algorithm">Choose an algorithm:</label><br>
         <select id="algorithm" name="algorithm">
             <option value="aes256">AES256</option>
+            <option value="rsa">RSA</option>
         </select><br><br>
         <select id="action" name="action">
             <option value="encrypt">Encrypt</option>
@@ -33,6 +48,8 @@
 
         <input type="submit" value="Encrypt">
     </form>
+    <button onclick="genRandRSA()">Random 256-bit</button>
+    <p id="randKeysLabel"></p>
     <h3>Memory usage: <span id="cmemuse">0</span></h3>
 </body>
 </html>

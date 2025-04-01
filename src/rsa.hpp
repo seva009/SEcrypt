@@ -3,20 +3,22 @@
 
 #include <string>
 #include <tuple>
-#include <vector>
 #include "num.hpp"
-#include "crypt.h"
 
 class PrivateKey {
 public:
     Num n;
     Num d;
+    std::string serialize();
+    static PrivateKey deserialize(const std::string &);
 };
 
 class PublicKey {
 public:
     Num n;
     Num e;
+    std::string serialize();
+    static PublicKey deserialize(const std::string &);
 };
 
 class RSA {
@@ -28,6 +30,7 @@ public:
     PrivateKey private_key;
 
     RSA(PrivateKey private_key, PublicKey public_key);
+    RSA(PrivateKey private_key);
     RSA(PublicKey public_key);
     RSA(size_t n_bits);
     std::tuple<PrivateKey, PublicKey> genRandKeys(size_t n_bits);
