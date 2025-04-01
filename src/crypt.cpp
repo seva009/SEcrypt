@@ -24,6 +24,7 @@ using namespace std;
 #endif
 #endif
 
+
 #ifdef _WIN32
 void* sGenKey(size_t size, mt19937_64& eng) {
     void* memKey = malloc(size);
@@ -38,17 +39,22 @@ void* sGenKey(size_t size, mt19937_64& eng) {
     }
     return memKey;
 }
+
+void genRandBytes(uint8_t *bytes, size_t n_bytes) {
+    for (int i = 0; i < n_bytes; ++i) bytes[i] = rand() % UINT8_MAX;  // TODO FIXME
+}
 #endif
 
 #ifdef __linux__
-void* sGenKey(size_t size) {
+void genRandBytes(uint8_t *bytes, size_t n_bytes) {
     FILE* fileF = fopen("/dev/random", "rb");
-    void* memKey = malloc(size);
-    if (memKey == nullptr) {
-        return nullptr;
-    }
-    fread(memKey, size, 1, fileF);
+    fread(bytes, n_bytes, 1, fileF);  // TODO can fail?
     fclose(fileF);
+};
+
+void* sGenKey(size_t size) {
+    void* memKey = malloc(size);
+    genRandBytes((uint8_t *)memKey, size);
     return memKey;
 }
 #endif

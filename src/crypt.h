@@ -1,10 +1,14 @@
 #ifndef CRYPT_H
 #define CRYPT_H
 
+#include <cstdint>
 #include <string>
 #include <random>
+#include "dFile.h"
 
 using namespace std;
+
+void genRandBytes(uint8_t *bytes, size_t n_bytes);
 
 class Crypt {
 protected:
