@@ -27,6 +27,7 @@ classname.clear() старая версия, затирает файл и деа
  так вот все расчеты проведены для 4 ключей а о 8 думаю говорить не надо
  а если для тебя это не аргумент то просто флаг -t делает взлом невозможным(но надо хранить ключ где-то)
 */
+#include "rsa.hpp"
 #include "tracealloc.h"
 #include "dFile.h"
 #include "aes256.hpp"
@@ -72,28 +73,51 @@ int do_serve(void) {
         auto size = req.files.size();
         const auto& file = req.get_file_value("file");
         const auto& password = req.get_file_value("password");
+        const auto& rsa_key = req.get_file_value("rsa_key");
         const auto& algo = req.get_file_value("algorithm");
         const auto& action = req.get_file_value("action");
-        ByteArray key, plain, out;
-        size_t endSize;
-        for (auto c : password.content) {
-            key.push_back(c);
-        }
-        for (auto c : file.content) {
-            plain.push_back(c);
-        }
-        Aes256 aes(key);
-        if (action.content[0] == 'e') {   // TODO
-            endSize = Aes256::encrypt(key, plain, out);
-        }
-        else {
-            endSize = Aes256::decrypt(key, plain, out);
-        }
         string outs;
-        for (int i = 0; i < endSize; ++i) {
-            outs.push_back(out[i]);
+        if (algo.content == "aes256") {
+            ByteArray key, plain, out;
+            size_t endSize;
+            for (auto c : password.content) {
+                key.push_back(c);
+            }
+            for (auto c : file.content) {
+                plain.push_back(c);
+            }
+            Aes256 aes(key);
+            if (action.content == "encrypt") {
+                endSize = Aes256::encrypt(key, plain, out);
+            }
+            else {
+                endSize = Aes256::decrypt(key, plain, out);
+            }
+            for (int i = 0; i < endSize; ++i) {
+                outs.push_back(out[i]);
+            }
+        } else if (algo.content == "rsa") {
+            if (action.content == "encrypt") {
+                RSA rsa(PublicKey::deserialize(rsa_key.content));
+                outs = rsa.encrypt(file.content);
+            } else {
+                RSA rsa(PrivateKey::deserialize(rsa_key.content));
+                outs = rsa.decrypt(file.content);
+            }
         }
         res.set_content(outs, "application/octet-stream");
+    });
+    svr.Post("/generate_rsa_key", [](const httplib::Request &req, httplib::Response &res) {
+        const auto& n_bits = req.get_file_value("n_bits");
+        RSA rsa(std::stoi(n_bits.content));  // Hard coded
+        std::string out;
+        out.append("{\"private_key\": \"");
+        out.append(rsa.private_key.serialize());
+        out.push_back('"');
+        out.append(", \"public_key\": \"");
+        out.append(rsa.public_key.serialize());
+        out.append("\"}");
+        res.set_content(out, "application/json");
     });
 
 
