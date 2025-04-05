@@ -1,31 +1,35 @@
 #ifndef RSA_HPP
 #define RSA_HPP
 
+#include "num.hpp"
 #include <string>
 #include <tuple>
-#include "num.hpp"
 
-class PrivateKey {
-public:
+class PrivateKey
+{
+  public:
     Num n;
     Num d;
     std::string serialize();
     static PrivateKey deserialize(const std::string &);
 };
 
-class PublicKey {
-public:
+class PublicKey
+{
+  public:
     Num n;
     Num e;
     std::string serialize();
     static PublicKey deserialize(const std::string &);
 };
 
-class RSA {
-protected:
+class RSA
+{
+  protected:
     Num encrypt(Num m);
     Num decrypt(Num m);
-public:
+
+  public:
     PublicKey public_key;
     PrivateKey private_key;
 
@@ -45,4 +49,3 @@ Num genPrime(size_t n_bits);
 Num egcd(Num a, Num b);
 
 #endif // RSA_HPP
-
