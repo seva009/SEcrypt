@@ -8,7 +8,7 @@ private:
     size_t portable_ish_malloced_size(const void* p);
     size_t allocated_sz = 0;
 public:
-    size_t getAllocSz();
+     size_t getAllocSz();
      void* tmalloc(size_t size);
 
      void* tcalloc(size_t _Count, size_t _Size);

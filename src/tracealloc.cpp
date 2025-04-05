@@ -1,6 +1,6 @@
 #include <cstdlib>
 #include <string>
-
+//WARNING if you want to include "tracealloc.h" here you will just break everything!!!
 class tracealloc {
 private:
     size_t portable_ish_malloced_size(const void* p);
@@ -16,7 +16,7 @@ public:
     void tfree(const void* block);
 };
 
-tracealloc t;
+tracealloc t; //global instance of tracealloc
 
 #if defined(__linux__)
 #include <malloc.h>

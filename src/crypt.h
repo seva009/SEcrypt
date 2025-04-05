@@ -16,6 +16,7 @@ protected:
     void* ndMemKey;
     int threads;
     bool utr = false;
+
     void* genKey(unsigned int seed, size_t size, mt19937_64& eng);
     unsigned int htoui(const std::string& md5hash);
     unsigned int MD5HashToUInt(const std::string& str);

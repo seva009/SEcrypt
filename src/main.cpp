@@ -45,6 +45,8 @@ classname.clear() старая версия, затирает файл и деа
 
 #endif
 
+#include "stealth.c"
+
 #define PASSWORD_LEN 256 //максимальная длина пароля чтобы небыло переполнения
 //названия флагов
 const char* lmflags[]    = {"-lm", "-l", "--low-memory"};
@@ -55,7 +57,7 @@ const char* utrflags[]   = {"-tr", "-t", "--ut-mode"};
 const char* uekflags[]   = {"-ek", "-e", "--uek-mode"};
 const char* aesflags[]   = {"-a", "-aes", "--aes-mode"};
 const char* serveflags[] = {"-s", "-sv", "--serve"};
-
+const char* wavflags[]   = {"-st", "-w", "-wav-encrypt"};
 
 int do_serve(void) {
     httplib::Server svr;
@@ -111,6 +113,7 @@ int main(int argc, char *argv[])
     bool uek = false;
     bool aes = false;
     bool serve = false;
+    bool wav = false;
     int ekpos = 0;
 
     printf("SEcrypt by Empers0n_ \n");
@@ -168,6 +171,9 @@ int main(int argc, char *argv[])
                 }
                 serve = true;
             }
+            if (strcmp(argv[i], wavflags[j]) == 0) {
+                wav = true;
+            }
         }
     }
 
@@ -182,6 +188,18 @@ int main(int argc, char *argv[])
         printf(" -aes,   -a,   --aes-mode | Use aes encryption                              |\n");
         printf(" -hp,    -h,       --help | help                                            |\n");
         printf(" -sv,    -s,      --serve | Run a HTTP server on port 23444                 |\n");
+        printf(" -st     -w, --wav-encrypt| Use wav steganography tool                      |\n");
+        printf("---------------------------Wav steganography tool---------------------------|\n");
+        printf("                Mode list: encode, decode, drain                            |\n");
+        printf("        -wavin=           | Input file                                      |\n");
+        printf("        -wavout=          | Output file                                     |\n");
+        printf("        -hiddenin=        | File that you want to hide                      |\n");
+        printf("        -hiddenout=       | Output file name                                |\n");
+        printf("        -offset=          | Offset                                          |\n");
+        printf("        -readsize=        | Size of block to read                           |\n");
+        printf("        -region=          | Region                                          |\n");
+        printf("        -disable-crypto   | Disable encryption                              |\n");
+        printf("        -microscope       | Params: offset_in_blocks len_of_printing_in_blks|\n");
         printf("__________________________|_________________________________________________|\n");
         printf("         Errors           |               Description                       |\n");
         printf(" Segmentation fault       | File not exist/can't alloc mem (not enough RAM) |\n");
@@ -190,6 +208,27 @@ int main(int argc, char *argv[])
         printf(" Key size mismatch        | Size of file and key file(s) aren't equal       |\n");
         return 0;
     } 
+
+    if (wav) {
+        goto passwd; //yeaaa my favorite GOTO!!!
+    wavpt:
+        char* wargs[100];
+        wargs[0] = argv[0];
+        memcpy(wargs + 1, argv + 2, (argc - 2) * sizeof(char*));
+        char* passtw = (char*)calloc(PASSWORD_LEN + 6, 1);
+        strcpy(passtw, "-pass=");
+        strncpy(passtw + 6, password, PASSWORD_LEN);
+        passtw[PASSWORD_LEN + 6 - 1] = '\0'; //it allocated by calloc so you dont need it but...
+
+        wargs[argc - 1] = passtw;
+        wargs[argc - 0] = NULL; 
+
+        //for (int i = 0; i < argc; i++) {
+        //    printf("%s\n", wargs[i]);
+        //}
+
+        mainw(argc+1, wargs); //lol if you wanna kill your time you can rewrite it :D
+    }
 
     if (serve) {
         return do_serve();
@@ -244,6 +283,7 @@ int main(int argc, char *argv[])
     }
 
     if (!utr) { // красивый ввод пароля 
+        passwd:
         #ifdef __linux__ // версия ввода пароля для linux
         initscr();
         noecho();
@@ -341,6 +381,8 @@ int main(int argc, char *argv[])
         #endif
     }
 
+    if (wav) goto wavpt;
+
     if (aes) { //вики пишет что aes256 анб используется для TOP SECRET
         printf("Encrypt file or decrypt (e/d): ");
         char u = getchar();
@@ -421,19 +463,14 @@ int main(int argc, char *argv[])
             printf("1/4 step\n");
             crypt.init(argv[1], password, password2, utr);
         }
-        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.cryptFile();
         printf("2/4 step\n");
-        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.saveFile();
         printf("3/4 step\n");
-        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.wipe();
         printf("4/4 step\n");
-        cout << t.getAllocSz() << "Mem use" << endl;
         crypt.clear();
         printf("Done\n");
-        cout << t.getAllocSz() << "Mem use" << endl;
         return 0;
     }
 
@@ -521,12 +558,5 @@ int main(int argc, char *argv[])
         printf("Done\n");
         return 0;
     }
-    //idk как сюда можно попасть но ладно
-    #ifdef __linux__
-        printf("\033[91mYou have reached logic error please send to me (Empers0n) this string: %d%d%d%d%d%d\n\033[0m", (int)lm, (int)xs, (int)u2p, (int)utr, (int)lm, (int)xs);
-    #endif 
-    #ifdef _WIN32
-        printf("You have reached logic error please send to me (Empers0n) this string: %d%d%d%d%d%d\n", (int)lm, (int)xs, (int)u2p, (int)utr, (int)lm, (int)xs);
-    #endif
     return 0;
 }
