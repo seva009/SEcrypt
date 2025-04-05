@@ -51,11 +51,16 @@ Num egcd(Num a, Num b) {
 tuple<PrivateKey, PublicKey> RSA::genRandKeys(size_t n_bits) {
     Num p = genPrime(n_bits), q = genPrime(n_bits);
     Num n = p * q;
-    Num phi = (p-1) * (q-1);
+    Num phi = (p - 1) * (q - 1);
     Num e = (1 << 16) + 1;
     Num d = (phi + egcd(e, phi)) % phi;
-    return {{.n = n, .d = d}, {.n = n, .e = e}};
+
+    PrivateKey privateKey = { n, d };
+    PublicKey publicKey = { n, e };
+
+    return { privateKey, publicKey };
 }
+
 
 Num RSA::encrypt(Num m) {
     return m.mod_pow(this->public_key.e, this->public_key.n);
@@ -140,7 +145,8 @@ PublicKey PublicKey::deserialize(const std::string &s) {
         tokens.push_back(m);
     }
     assert(tokens.size() == 2);
-    return {.n = tokens[0], .e = tokens[1]};
+    PublicKey publickey = { tokens[0], tokens[1] };
+    return publickey;
 };
 
 std::string PrivateKey::serialize() {

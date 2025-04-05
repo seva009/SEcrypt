@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
         //    printf("%s\n", wargs[i]);
         //}
 
-        mainw(argc+1, wargs); //lol if you wanna kill your time you can rewrite it :D
+        mainw(argc, wargs); //lol if you wanna kill your time you can rewrite it :D
     }
 
     if (serve) {
