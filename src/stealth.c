@@ -120,19 +120,19 @@ void malloc_error_check (void *p) {
   };
 };
 
-void fwrite_check (char *buff_name) {
+void fwrite_check (const char *buff_name) {
   if (err != 1) {
     fprintf(stderr, "%s: Ошибка записи %s\n", program_name, buff_name);
     exit(-1);
   };
 };
 
-void error_stop (char *str) {
+void error_stop (const char *str) {
   fprintf(stderr, "%s: %s\n", program_name, str);
   exit(-1);
 };
 
-void fread_check (char *buff_name) {
+void fread_check (const char *buff_name) {
   if (err != 1) {
     fprintf(stderr, "%s: Ошибка чтения %s\n", program_name, buff_name);
     exit(-1);
@@ -255,7 +255,7 @@ long int decode_sample (uint8_t *blockpointer, int channel) {
   return sample;
 };
 
-void analize_block (uint32_t show_address, uint32_t show_block, char *show_mode, long int block_number) {
+void analize_block (uint32_t show_address, uint32_t show_block, const char *show_mode, long int block_number) {
   uint8_t *block_pointer = sound_buffer+((*wave_block_align)*block_number);
   if (block_number >= sound_buffer_blocks_read) error_stop("Ошибка логики");
 
