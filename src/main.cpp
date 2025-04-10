@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
     bool serve = false;
     bool wav = false;
     int ekpos = 0;
+    bool lack_pos_args = true;
 
     printf("SEcrypt by Empers0n_ \n");
 
@@ -258,7 +259,6 @@ int main(int argc, char *argv[])
         return do_serve();
     }
 
-    bool lack_pos_args = true;
     for (int ai = 1; ai < argc; ++ai) {
         lack_pos_args &= argv[ai][0] == '-';
     }
