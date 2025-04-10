@@ -7,7 +7,7 @@
 - [x] Steganography
 
 ## Установка
-Вы можете скачать готовый файл с GitHub: [SEcrypt](https://github.com/seva009/SEcrypt)
+Вы можете скачать готовый файл с GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/tag/v0.1)
 
 ## Связь:
 - [GitHub](https://github.com/seva009)
