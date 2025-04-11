@@ -1,7 +1,8 @@
 CC = g++
-CFLAGS = -O2 -Wall -std=c++11 -I./src
+CFLAGS = -O2 -Wall -std=c++11 -I./src 
+#-fsanitize=address  -g
 LIBS = -lncurses
-SRCS = src/main.cpp src/md5.cpp src/aes256.cpp src/dFile.cpp src/crypt.cpp src/tracealloc.cpp src/rsa.cpp
+SRCS = src/main.cpp src/md5.cpp src/aes256.cpp src/dFile.cpp src/crypt.cpp src/tracealloc.cpp src/rsa.cpp  src/textsteg.cpp
 OBJS = $(SRCS:.cpp=.o)
 EXEC = SEcrypt
 

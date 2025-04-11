@@ -28,6 +28,7 @@ classname.clear() старая версия, затирает файл и деа
  а если для тебя это не аргумент то просто флаг -t делает взлом невозможным(но надо хранить ключ где-то)
 */
 #include "rsa.hpp"
+#include "textsteg.h"
 #include "tracealloc.h"
 #include "dFile.h"
 #include "aes256.hpp"
@@ -118,6 +119,19 @@ int do_serve(void) {
         out.append(rsa.public_key.serialize());
         out.append("\"}");
         res.set_content(out, "application/json");
+    });
+    svr.Post("/process_steg", [](const httplib::Request &req, httplib::Response &res) {
+        const auto& file = req.get_file_value("file");
+        const auto& cover_file = req.get_file_value("cover_file");
+        const auto& algo = req.get_file_value("algorithm");
+        const auto& action = req.get_file_value("action");
+        if (action.content == "hide") {
+            std::string outs = hide(stringToVecBool(file.content), cover_file.content).second;
+            res.set_content(outs, "application/octet-stream");
+        } else {
+            std::string outs = vecBoolToString(reveal(file.content));
+            res.set_content(outs, "application/octet-stream");
+        }
     });
 
 

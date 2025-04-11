@@ -57,6 +57,21 @@
     <input type="number" id="n_bits" value=256 />
     <button onclick="genRandRSA()">Random</button>
     <p id="randKeysLabel"></p>
+    <form action="/process_steg" method="POST" enctype="multipart/form-data">
+        <label for="file">Choose a file to hide or a file to reveal the data from:</label><br>
+        <input type="file" id="file" name="file" required><br><br>
+        <label for="cover_file">Choose a cover file:</label><br>
+        <input type="file" id="cover_file" name="cover_file" required><br><br>
+        <select id="algorithm" name="algorithm">
+            <option value="text">Text</option>
+        </select><br><br>
+        <select id="action" name="action">
+            <option value="hide">Hide</option>
+            <option value="reveal">Reveal</option>
+        </select><br><br>
+
+        <input type="submit" value="Hide">
+    </form>
     <h3>Memory usage: <span id="cmemuse">0</span></h3>
 </body>
 </html>
