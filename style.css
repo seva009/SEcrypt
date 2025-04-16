@@ -1,0 +1,80 @@
+/* Основные настройки для всего тела страницы */
+body {
+    margin: 0; /* Убираем отступы по краям страницы */
+    padding: 0; /* Убираем внутренние отступы */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Шрифт по умолчанию */
+    background: url('background.jpg') no-repeat center center fixed; /* Фоновое изображение по центру, не повторяется, зафиксировано при прокрутке */
+    background-size: cover; /* Масштабирует фон так, чтобы он покрывал всю область экрана */
+    color: #ffffff; /* Белый цвет текста */
+}
+
+/* Центровка всего содержимого по вертикали и горизонтали */
+body, html {
+    height: 100%; /* Занимают всю высоту окна браузера */
+    display: flex; /* Используем flexbox для выравнивания */
+    flex-direction: column; /* Располагаем элементы вертикально */
+    align-items: center; /* Центрируем по горизонтали */
+    justify-content: flex-start; /* Элементы начинаются сверху */
+    padding: 2rem; /* Отступы от краев страницы */
+    box-sizing: border-box; /* Включаем padding в общую ширину/высоту */
+}
+
+/* Стили для заголовков h2 и h3 */
+h2, h3 {
+    text-align: center; /* Выравнивание по центру */
+    margin-bottom: 1rem; /* Отступ снизу */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Тень текста для лучшей читаемости */
+}
+
+/* Общий стиль для всех форм */
+form {
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный тёмный фон */
+    padding: 2rem; /* Внутренние отступы */
+    border-radius: 10px; /* Скруглённые углы */
+    margin: 1rem 0; /* Отступы сверху и снизу */
+    width: 100%; /* Занимает всю доступную ширину */
+    max-width: 500px; /* Но не шире 500px */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* Слабая светлая тень вокруг формы */
+}
+
+/* Общий стиль для элементов формы */
+label, input, select, button, p {
+    display: block; /* Каждый элемент занимает свою строку */
+    width: 100%; /* На всю ширину формы */
+    margin-bottom: 1rem; /* Отступ снизу */
+    font-size: 1rem; /* Размер текста */
+}
+
+/* Стили для полей ввода и выпадающих списков */
+input, select {
+    padding: 0.5rem; /* Внутренние отступы */
+    border: none; /* Без границ */
+    border-radius: 5px; /* Скруглённые углы */
+}
+
+/* Кнопки: отправка формы и обычные */
+input[type="submit"], button {
+    background-color: #3498db; /* Синий фон */
+    color: white; /* Белый текст */
+    cursor: pointer; /* Курсор в виде руки при наведении */
+    transition: background 0.3s ease; /* Плавное изменение фона */
+}
+
+/* Эффект при наведении на кнопку */
+input[type="submit"]:hover, button:hover {
+    background-color: #2980b9; /* Темно-синий фон */
+}
+
+/* Стиль для поля с RSA ключами */
+#randKeysLabel {
+    word-wrap: break-word; /* Перенос длинных строк */
+    white-space: pre-wrap; /* Сохраняем переносы строк */
+    background-color: rgba(255, 255, 255, 0.1); /* Светлый полупрозрачный фон */
+    padding: 1rem; /* Внутренние отступы */
+    border-radius: 5px; /* Скруглённые углы */
+
+
+/* Жирный шрифт для поля использования памяти */
+#cmemuse {
+    font-weight: bold; /* Жирное начертание */
+}
