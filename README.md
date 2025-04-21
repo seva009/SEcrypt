@@ -52,5 +52,4 @@ make
 > All scripts and styles for web UI should be in the file index.html
 
 ## Bugs:
-    - Steganography in audio files does not preserve the original form of the message.
-    -
+    Steganography in audio files does not preserve the original form of the message.
