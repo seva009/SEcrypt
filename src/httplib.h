@@ -190,7 +190,6 @@ using ssize_t = long;
 
 // afunix.h uses types declared in winsock2.h, so has to be included after it.
 #include <afunix.h>
-
 #ifndef WSA_FLAG_NO_HANDLE_INHERIT
 #define WSA_FLAG_NO_HANDLE_INHERIT 0x80
 #endif

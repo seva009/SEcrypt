@@ -36,6 +36,8 @@ classname.clear() старая версия, затирает файл и деа
 #include "crypt.h"
 #include "httplib.h"
 #include <cstring>
+#include <vector>
+#include "header.h"
 
 #ifdef __linux__
     #include <ncurses.h> // заголовок для линукс
@@ -68,7 +70,8 @@ int do_serve(void) {
     });
 
     svr.Get("/", [](const httplib::Request &, httplib::Response &res) {
-        res.set_file_content("./index.html");
+        //res.set_file_content("./index.html");
+        res.set_content(index_html, "text/html");
     });
     svr.Post("/process", [](const httplib::Request &req, httplib::Response &res) {
         auto size = req.files.size();

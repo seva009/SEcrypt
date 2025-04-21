@@ -4,6 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Основные настройки для всего тела страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+        }
+
+        /* Центровка всего содержимого по вертикали и горизонтали */
+        body, html {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        /* Стили для заголовков h2 и h3 */
+        h2, h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Общий стиль для всех форм */
+        form {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Общий стиль для элементов формы */
+        label, input, select, button, p {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Стили для полей ввода и выпадающих списков */
+        input, select {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+        }
+
+            /* Кнопки: отправка формы и обычные */
+            input[type="submit"], button {
+                background-color: #3498db;
+                color: white;
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+
+                /* Эффект при наведении на кнопку */
+                input[type="submit"]:hover, button:hover {
+                    background-color: #2980b9;
+                }
+
+        /* Стиль для поля с RSA ключами */
+        #randKeysLabel {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        /* Жирный шрифт для поля использования памяти */
+        #cmemuse {
+            font-weight: bold;
+        }
+
+    </style>
     <title>SEcrypt</title>
     <script>
         function updateCounter() {
