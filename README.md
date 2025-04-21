@@ -7,10 +7,10 @@
 - [x] Steganography
 
 ## Установка
-Вы можете скачать готовый файл с GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/tag/v0.1). Также для его запуска потребуется [vsr](https://aka.ms/vs/17/release/vc_redist.x64.exe)
-После скачивания перетащите файл в командную строку и в конце добавьте -s. Пример: "C:\Users\User\Downloads\Telegram Desktop\SEcrypt.exe" -s
-У вас должна появится надпись: SEcrypt by Empers0n_ (главное после этого не закрывайте командную строку)
-Следующим шагом переходите в браузер и в строку поиска пишите: localhost:23444
+- Вы можете скачать готовый файл с GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/tag/v0.1). Также для его запуска потребуется [vsr](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+- После скачивания перетащите файл в командную строку и в конце добавьте -s. Пример: "C:\Users\User\Downloads\Telegram Desktop\SEcrypt.exe" -s
+- У вас должна появится надпись: SEcrypt by Empers0n_ (главное после этого не закрывайте командную строку)
+- Следующим шагом переходите в браузер и в строку поиска пишите: localhost:23444
 На этом все, далее можете свободно взаимодействовать с программой.
 
 ## Связь:
