@@ -9,7 +9,7 @@
 ## Installing:
 - Download the finished file from GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/tag/v0.1). Also, to run it you will need [vsr](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 - After downloading, drag the file to the command line and add at the end "-s". Пример: "C:\Users\User\Downloads\Telegram Desktop\SEcrypt.exe" -s
-- You see a message: SEcrypt by Empers0n_ (the main thing after this is do not close the command line)
+- You will see a message: SEcrypt by Empers0n_ (the main thing after this is do not close the command line)
 - The next step is to go to your browser and type it into the text search: [localhost:23444](localhost:23444)
 - That's all, now you can freely interact with the program.
 
