@@ -6,14 +6,14 @@
 - [ ] Add more encryption methods to the web ui
 - [x] Steganography
 
-## Установка
-- Вы можете скачать готовый файл с GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/tag/v0.1). Также для его запуска потребуется [vsr](https://aka.ms/vs/17/release/vc_redist.x64.exe)
-- После скачивания перетащите файл в командную строку и в конце добавьте -s. Пример: "C:\Users\User\Downloads\Telegram Desktop\SEcrypt.exe" -s
-- У вас должна появится надпись: SEcrypt by Empers0n_ (главное после этого не закрывайте командную строку)
-- Следующим шагом переходите в браузер и в строку поиска пишите: [localhost:23444](localhost:23444)
-- На этом все, далее можете свободно взаимодействовать с программой.
+## Installing:
+- Download the finished file from GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/tag/v0.1). Also, to run it you will need [vsr](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+- After downloading, drag the file to the command line and add at the end "-s". Пример: "C:\Users\User\Downloads\Telegram Desktop\SEcrypt.exe" -s
+- You see a message: SEcrypt by Empers0n_ (the main thing after this is do not close the command line)
+- The next step is to go to your browser and type it into the text search: [localhost:23444](localhost:23444)
+- That's all, now you can freely interact with the program.
 
-## Связь:
+## Connect:
 - [GitHub](https://github.com/seva009)
 - [Mail](mailto:empers0n@kabanyara.ru)
 
@@ -32,7 +32,7 @@ make
 ```
 
 ### Windows
-Установите [MSYS2](https://www.msys2.org/) и выполните следующие команды:
+Install [MSYS2](https://www.msys2.org/) and run the following commands:
 ```bash
 pacman -Syu
 pacman -Su
@@ -48,9 +48,9 @@ make
 ```
 
 > [!IMPORTANT]
-> Если вы будете изменять web UI то изменяйте index.html а потом конвертируйте его в header.h с помощью HTML_builder и пересоберите проект
-> Все скрипты и стили для web UI должны быть в файле index.html
+> If you are going to change the web UI, then change index.html and then convert it to header.h using HTML_builder and rebuild the project
+> All scripts and styles for web UI should be in the file index.html
 
-## Баги:
-    - Стеганограмма в аудиофайлах не сохраняет изначальную длину сообщения
+## Bugs:
+    - Steganography in audio files does not preserve the original form of the message.
     -
