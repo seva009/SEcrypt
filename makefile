@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -O2 -Wall -std=c++11 -I./src 
 #-fsanitize=address  -g
 LIBS = -lncurses
-SRCS = src/main.cpp src/md5.cpp src/aes256.cpp src/dFile.cpp src/crypt.cpp src/tracealloc.cpp src/rsa.cpp  src/textsteg.cpp
+SRCS = src/main.cpp src/md5.cpp src/aes256.cpp src/dFile.cpp src/crypt.cpp src/tracealloc.cpp src/rsa.cpp src/textsteg.cpp
 OBJS = $(SRCS:.cpp=.o)
 EXEC = SEcrypt
 
@@ -12,7 +12,7 @@ TEST_EXEC = test-rsa
 
 .PHONY: all clean
 
-all: $(EXEC)
+all: bundle $(EXEC)
 
 $(EXEC): $(OBJS)
 	$(CC) $(OBJS) $(LIBS) -o $(EXEC)
@@ -27,6 +27,10 @@ test-rsa: src/rsa.o src/crypt.o src/dFile.o src/tracealloc.o
 
 test: tests
 	./$(TEST_EXEC)
+
+bundle:
+	./builder/build/HTML_builder
+	cp header.h src/
 
 clean:
 	rm -f $(OBJS) $(EXEC) $(TEST_OBJ) $(TEST_EXEC)

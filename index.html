@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <style>
         /* Основные настройки для всего тела страницы */
         body {
@@ -34,7 +33,7 @@
         }
 
         /* Общий стиль для всех форм */
-        form {
+        form, #randKeysBlock {
             background-color: rgba(0, 0, 0, 0.6);
             padding: 2rem;
             border-radius: 10px;
@@ -138,9 +137,11 @@
 
         <input type="submit" value="Encrypt">
     </form>
-    <input type="number" id="n_bits" value=256 />
-    <button onclick="genRandRSA()">Random</button>
-    <p id="randKeysLabel"></p>
+    <div id="randKeysBlock">
+        <input type="number" id="n_bits" value=256 />
+        <button onclick="genRandRSA()">Random</button>
+        <p id="randKeysLabel"></p>
+    </div>
     <form action="/process_steg" method="POST" enctype="multipart/form-data">
         <label for="file">Choose a file to hide or a file to reveal the data from:</label><br>
         <input type="file" id="file" name="file" required><br><br>
