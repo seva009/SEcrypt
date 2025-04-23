@@ -1,9 +1,15 @@
 #include "rsa.hpp"
 #include "crypt.h"
 #include "num.hpp"
+#include "tracealloc.h"
 #include <algorithm>
 #include <cassert>
 #include <sstream>
+#include <thread>
+#include <vector>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 RSA::RSA(PrivateKey private_key, PublicKey public_key) : private_key(private_key), public_key(public_key) {};
 RSA::RSA(PrivateKey private_key) : private_key(private_key) {};
@@ -14,6 +20,11 @@ RSA::RSA(size_t n_bits)
     tie(this->private_key, this->public_key) = genRandKeys(n_bits);
 };
 
+Num prime = 0;
+std::atomic<bool> found(false);
+std::mutex mtx;
+std::condition_variable cv;
+
 bool isPrimeFermat(Num n, int iterc)
 {
     if (n < 4)
@@ -22,6 +33,7 @@ bool isPrimeFermat(Num n, int iterc)
     }
     for (int i = 0; i < iterc; ++i)
     {
+        if (found) return false;
         Num base = Num::random_bits(n.bitlength(), genRandBytes);
         if (base.mod_pow(n - 1, n) != 1)
             return false;
@@ -29,16 +41,38 @@ bool isPrimeFermat(Num n, int iterc)
     return true;
 }
 
-Num genPrime(size_t n_bits)
+Num genPrimeThread(size_t n_bits)
 {
-    while (true)
+    while (!found)
     {
         Num rand_num = Num::random_bits(n_bits, genRandBytes);
-        if (isPrimeFermat(rand_num, 40))
+        if (!found && isPrimeFermat(rand_num, 40))
         {
+            std::lock_guard<std::mutex> lock(mtx);
+            found = true;
+            prime = rand_num;
+            cv.notify_all();
             return rand_num;
         }
     }
+    return 0;
+}
+
+Num genPrime(size_t n_bits) {
+    found = false;
+    int nproc = std::thread::hardware_concurrency();
+    std::vector<std::thread> threads;
+    for (int i = 0; i < nproc; ++i) {
+        threads.emplace_back(genPrimeThread, n_bits);
+    }
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, [] { return found.load(); });
+    
+    for (auto& t : threads) {
+        t.join();
+    }
+    found = false;
+    return prime;
 }
 
 Num egcd(Num a, Num b)

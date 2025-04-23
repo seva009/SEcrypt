@@ -47,7 +47,7 @@ void genRandBytes(uint8_t *bytes, size_t n_bytes) {
 
 #ifdef __linux__
 void genRandBytes(uint8_t *bytes, size_t n_bytes) {
-    FILE* fileF = fopen("/dev/random", "rb");
+    FILE* fileF = fopen("/dev/urandom", "rb");
     fread(bytes, n_bytes, 1, fileF);  // TODO can fail?
     fclose(fileF);
 };
