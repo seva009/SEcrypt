@@ -11,12 +11,12 @@
 ### Windows
 - Download the finished file from GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/latest). 
 - After downloading, drag the file to the command line and add flag "-s". Example: .\SEcrypt.exe -s
-- Open [localhost:23444](localhost:23444) in your web browser
+- Open [127.0.0.1:23444](127.0.0.1:23444) in your web browser
 
 ### Linux
 - Download the executable from [GitHub releases](https://github.com/seva009/SEcrypt/releases/latest)
 - Open the terminal (e.g. by pressing Ctrl+Alt+T) in the same directory as the executable and run `./SEcrypt -s`. More information about command line arguments can be found by running `./SEcrypt -h`
-- Open [localhost:23444](localhost:23444) in your web browser
+- Open [127.0.0.1:23444](127.0.0.1:23444) in your web browser
 
 ## Connect:
 - [GitHub](https://github.com/seva009)
