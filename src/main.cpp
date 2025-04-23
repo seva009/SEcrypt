@@ -51,6 +51,8 @@ classname.clear() старая версия, затирает файл и деа
 
 #include "stealth.c"
 
+int port_num = 23444; //порт по умолчанию
+
 #define PASSWORD_LEN 256 //максимальная длина пароля чтобы небыло переполнения
 //названия флагов
 const char* lmflags[]    = {"-lm", "-l", "--low-memory"};
@@ -62,8 +64,10 @@ const char* uekflags[]   = {"-ek", "-e", "--uek-mode"};
 const char* aesflags[]   = {"-a", "-aes", "--aes-mode"};
 const char* serveflags[] = {"-s", "-sv", "--serve"};
 const char* wavflags[]   = {"-st", "-w", "-wav-encrypt"};
+const char* portflags[]   = {"-port", "-p", "--port"};
 
 int do_serve(void) {
+    printf("Starting server on port %d\n", port_num);
     httplib::Server svr;
     svr.Get("/getmemuse", [](const httplib::Request&, httplib::Response& res) {
         res.set_content(std::to_string(t.getAllocSz()), "text/plain");
@@ -138,7 +142,7 @@ int do_serve(void) {
     });
 
 
-    svr.listen("127.0.0.1", 23444);
+    svr.listen("127.0.0.1", port_num);
     return 0;
 }
 
@@ -155,6 +159,7 @@ int main(int argc, char *argv[])
     bool aes = false;
     bool serve = false;
     bool wav = false;
+    bool port = false;
     int ekpos = 0;
     bool lack_pos_args = true;
 
@@ -216,6 +221,10 @@ int main(int argc, char *argv[])
             if (strcmp(argv[i], wavflags[j]) == 0) {
                 wav = true;
             }
+            if (strcmp(argv[i], portflags[j]) == 0) {
+				port = true;
+                port_num = atoi(argv[i + 1]);
+			}
         }
     }
 
@@ -229,7 +238,8 @@ int main(int argc, char *argv[])
         printf(" -ek,    -e,   --uek-mode | <key1 file> <key2 file>(opt) - use external key |\n");
         printf(" -aes,   -a,   --aes-mode | Use aes encryption                              |\n");
         printf(" -hp,    -h,       --help | help                                            |\n");
-        printf(" -sv,    -s,      --serve | Run a HTTP server on port 23444                 |\n");
+        printf(" -sv,    -s,      --serve | Run a HTTP server (default port: 23444)         |\n");
+        printf(" -p,     -port,  --port   | Port number for the server                      |\n");
         printf(" -st     -w, --wav-encrypt| Use wav steganography tool                      |\n");
         printf("---------------------------Wav steganography tool---------------------------|\n");
         printf("                Mode list: encode, decode, drain                            |\n");

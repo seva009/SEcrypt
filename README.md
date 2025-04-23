@@ -1,22 +1,20 @@
 # SEcrypt
 ## Todos
 - [x] Make sure it works on windows
-- [ ] Add the port option
-- [ ] Bundle the templates in the executable
+- [x] Add the port option
+- [x] Bundle the templates in the executable
 - [ ] Add more encryption methods to the web ui
 - [x] Steganography
 
-## Installation:
+## Run:
 
 ### Windows
-- Download the finished file from GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/tag/v0.1). Also, to run it you will need [vsr](https://aka.ms/vs/17/release/vc_redist.x64.exe)
-- After downloading, drag the file to the command line and add at the end "-s". Пример: "C:\Users\User\Downloads\Telegram Desktop\SEcrypt.exe" -s
-- You will see a message: SEcrypt by Empers0n_ (the main thing after this is to not close the command line)
-- The next step is to go to your browser and type it into the text search: [localhost:23444](localhost:23444)
-- That's all, now you can freely interact with the program
+- Download the finished file from GitHub: [SEcrypt](https://github.com/seva009/SEcrypt/releases/latest). 
+- After downloading, drag the file to the command line and add flag "-s". Example: .\SEcrypt.exe -s
+- Open [localhost:23444](localhost:23444) in your web browser
 
 ### Linux
-- Download the executable from [GitHub releases](https://github.com/seva009/SEcrypt/releases/tag/v0.1)
+- Download the executable from [GitHub releases](https://github.com/seva009/SEcrypt/releases/latest)
 - Open the terminal (e.g. by pressing Ctrl+Alt+T) in the same directory as the executable and run `./SEcrypt -s`. More information about command line arguments can be found by running `./SEcrypt -h`
 - Open [localhost:23444](localhost:23444) in your web browser
 
@@ -24,7 +22,7 @@
 - [GitHub](https://github.com/seva009)
 - [Mail](mailto:empers0n@kabanyara.ru)
 
-## Сборка:
+## Build:
 ### Linux
 
 #### Install required tools
