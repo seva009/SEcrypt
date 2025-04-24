@@ -1,4 +1,8 @@
 # SEcrypt
+## About
+
+SEcrypt is a cross-platform cryptography and steganography toolkit designed to provide an interface to strong encryption algorithms, both symmetric and asymmetric. SEcrypt currently supports AES-256 and RSA. It also includes a user-friendly web server that allows for easy interaction.
+
 ## Todos
 - [x] Make sure it works on windows
 - [x] Add the port option
