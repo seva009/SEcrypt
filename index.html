@@ -149,7 +149,9 @@
         <input type="file" id="cover_file" name="cover_file" required><br><br>
         <select id="algorithm" name="algorithm">
             <option value="text">Text</option>
+            <option value="wav">WAV</option>
         </select><br><br>
+        <input type="password" id="password" name="password" placeholder="Enter password (only for wav mode)"><br><br>
         <select id="action" name="action">
             <option value="hide">Hide</option>
             <option value="reveal">Reveal</option>
@@ -157,6 +159,15 @@
 
         <input type="submit" value="Hide">
     </form>
+<!--    <form action="/process_wav" method="POST" enctype="multipart/form-data">
+        <label for="wav_file">Choose a WAV file:</label><br>
+        <input type="file" id="wav_file" name="wav_file" required><br><br>
+        <label for="text">Enter text to hide or choose a file to hide:</label><br>
+        <input type="text" id="text" name="text"><br><br>
+        <input type="file" id="file_to_hide" name="file_to_hide"><br><br>
+        <input type="submit" value="Hide in WAV">
+    </form>-->
+
     <h3>Memory usage: <span id="cmemuse">0</span></h3>
 </body>
 </html>

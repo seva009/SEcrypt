@@ -38,6 +38,7 @@ classname.clear() старая версия, затирает файл и деа
 #include <cstring>
 #include <vector>
 #include "header.h"
+#include <fstream>
 
 #ifdef __linux__
     #include <ncurses.h> // заголовок для линукс
@@ -52,8 +53,12 @@ classname.clear() старая версия, затирает файл и деа
 #include "stealth.c"
 
 int port_num = 23444; //порт по умолчанию
+bool isKilling = true;
 
-#define PASSWORD_LEN 256 //максимальная длина пароля чтобы небыло переполнения
+#define PASSWORD_LEN 256 //максимальная длина пароля чтобы не было переполнения
+char* password = (char*)calloc(PASSWORD_LEN, sizeof(char));
+char* password2 = (char*)calloc(PASSWORD_LEN, sizeof(char));
+
 //названия флагов
 const char* lmflags[]    = {"-lm", "-l", "--low-memory"};
 const char* xsflags[]    = {"-xs", "-x", "--xs-mode"};
@@ -132,13 +137,74 @@ int do_serve(void) {
         const auto& cover_file = req.get_file_value("cover_file");
         const auto& algo = req.get_file_value("algorithm");
         const auto& action = req.get_file_value("action");
-        if (action.content == "hide") {
-            std::string outs = hide(stringToVecBool(file.content), cover_file.content).second;
-            res.set_content(outs, "application/octet-stream");
-        } else {
-            std::string outs = vecBoolToString(reveal(file.content));
-            res.set_content(outs, "application/octet-stream");
+        const auto& passwordt = req.get_file_value("password");
+        if (algo.content == "text") {
+            std::string outs;
+            if (action.content == "hide") {
+                std::string outs = hide(stringToVecBool(file.content), cover_file.content).second;
+                res.set_content(outs, "application/octet-stream");
+            }
+            else {
+                std::string outs = vecBoolToString(reveal(file.content));
+                res.set_content(outs, "application/octet-stream");
+            }
+			res.set_content(outs, "application/octet-stream");
         }
+        else {
+            isKilling = false;
+            std::remove(".tempusrwav_in.wav");
+            std::remove(".tempusrwav_out.wav");
+            std::remove(".hidefile.bin");
+            std::string outs;
+            strcpy(password, passwordt.content.c_str());
+
+            std::fstream in_wav(".tempusrwav_in.wav", std::ios::in | std::ios::binary);
+            std::fstream hide_file(".hidefile.bin", std::ios::in | std::ios::binary);
+            if (!in_wav.is_open()) {
+				in_wav.open(".tempusrwav_in.wav", std::ios::out | std::ios::binary);
+			}
+            if (!hide_file.is_open()) {
+                hide_file.open(".hidefile.bin", std::ios::out | std::ios::binary);\
+            }
+            in_wav.write(cover_file.content.c_str(), cover_file.content.size());
+            hide_file.write(file.content.c_str(), file.content.size());
+            in_wav.close();
+            hide_file.close();
+            //making arguments
+            char* wargs[100];
+            wargs[0] = "SEcrypt";
+            wargs[1] = (action.content == "hide") ? "encode" : "decode";
+            wargs[3] = "-wavin=.tempusrwav_in.wav";
+            if (action.content == "hide") {
+                wargs[4] = "-hiddenin=.hidefile.bin";
+                wargs[5] = "-wavout=.tempusrwav_out.wav";
+			} else {
+                wargs[4] = "-hiddenout=.hidefile.bin";
+			}
+            char* pass_arg = (char*)calloc(300, 1);
+            strcpy(pass_arg, "-pass=");
+            strcpy(pass_arg + 6, password);
+            wargs[2] = pass_arg;
+            for (int i = 0; i < 5 + (action.content == "hide"); ++i) {
+				printf("%s\n", wargs[i]);
+			}
+            mainw(5 + (action.content == "hide"), wargs); //lol if you wanna kill your time you can rewrite it :D
+        steg_end:
+            std::fstream out_wav(".tempusrwav_out.wav", std::ios::in | std::ios::binary);
+            std::string out;
+            out_wav.seekg(0, std::ios::end);
+            size_t size = out_wav.tellg();
+            out_wav.seekg(0, std::ios::beg);
+            out.resize(size);
+            out_wav.read(&out[0], size);
+            out_wav.close();
+            std::remove(".tempusrwav_in.wav");
+            std::remove(".tempusrwav_out.wav");
+            std::remove(".hidefile.bin");
+            std::remove(pass_arg);
+            res.set_content(out, "application/octet-stream");
+        }
+
     });
 
 
@@ -164,10 +230,6 @@ int main(int argc, char *argv[])
     bool lack_pos_args = true;
 
     printf("SEcrypt by Empers0n_ \n");
-
-    //пароли с размером PASSWORD_LEN который задефан наверху
-    char* password = (char*)calloc(PASSWORD_LEN, sizeof(char));
-    char* password2 = (char*)calloc(PASSWORD_LEN, sizeof(char));
 
     //сбор флагов из аргументов
     for (int i = 0; i < argc; i++) {
